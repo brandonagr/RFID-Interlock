@@ -92,26 +92,19 @@ void loop() {
       if (err == 0) {
         err = http.responseStatusCode();
         if (err == 204) {
-          err = http.skipResponseHeaders();
-          if (err >= 0) {
             Serial.println("Authorized!");
             activate();
             allowTone();
-          } else {
-            Serial.print("Failed to skip response headers: ");
-            Serial.println(err);
-            deactivate();
-          }
         } else {
-          Serial.print("Getting response failed: ");
+          Serial.print("Non 204 response: ");
           Serial.println(err);
-          denyTone();
           deactivate();
+          denyTone();
         }
       } else {
         Serial.print("Connection failed: ");
         Serial.println(err);
-        deactivate();
+        activate(); // default to active if failure to communicate with service
       }
       http.stop();
     }
